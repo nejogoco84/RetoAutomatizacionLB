@@ -34,6 +34,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.7'
     testImplementation "net.serenity-bdd:serenity-core:$serenityVersion"
     testImplementation "net.serenity-bdd:serenity-junit:$serenityVersion"
     implementation "net.serenity-bdd:serenity-screenplay:$serenityVersion"

@@ -1,6 +1,7 @@
 package co.com.reto.lulobank.interactions;
 
 import co.com.reto.lulobank.exceptions.MyBusinessException;
+import co.com.reto.lulobank.utils.Constant;
 import co.com.reto.lulobank.utils.ExceptionMessages;
 import co.com.reto.lulobank.utils.HelpFunctions;
 import lombok.SneakyThrows;
@@ -9,25 +10,26 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Interaction;
 import net.serenitybdd.screenplay.Tasks;
 
-public class SendRequestGet implements Interaction {
+public class SendRequestPost extends SendRequestGet implements Interaction {
     HelpFunctions helpFunctions = new HelpFunctions();
-    public final String endpoint;
-    public final String service;
 
-    public SendRequestGet(String endpoint, String service) {
-        this.endpoint = endpoint;
-        this.service = service;
+    private final String information;
+
+    public SendRequestPost(String endpoint, String service, String information) {
+        super(endpoint, service);
+        this.information = information;
     }
 
     @SneakyThrows
     @Override
     public <T extends Actor> void performAs(T actor) {
+
         try {
-            SerenityRest.given()
+            SerenityRest.given().contentType(Constant.APPLICATION_JSON)
                     .baseUri(endpoint)
                     .basePath(service)
-                    .when()
-                    .get();
+                    .body(information)
+                    .when().post();
             helpFunctions.saveInfoResponse(actor);
 
         } catch (Exception ex) {
@@ -35,7 +37,7 @@ public class SendRequestGet implements Interaction {
         }
     }
 
-    public static SendRequestGet toService(String endpoint, String service) {
-        return Tasks.instrumented(SendRequestGet.class, endpoint, service);
+    public static SendRequestPost toService(String endpoint, String service, String information) {
+        return Tasks.instrumented(SendRequestPost.class, endpoint, service, information);
     }
 }

@@ -14,6 +14,7 @@ public class SearchAllEmployees implements Task {
         actor.attemptsTo(SendRequestGet.toService(SERVICE_ENDPOINT, SERVICE_GET)
         );
     }
+
     public static SearchAllEmployees ofTheList() {
         return Tasks.instrumented(SearchAllEmployees.class);
     }

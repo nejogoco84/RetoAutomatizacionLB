@@ -1,26 +1,32 @@
 package co.com.reto.lulobank.questions;
 
-import io.restassured.path.json.JsonPath;
+import co.com.reto.lulobank.models.ResponseAllEmployee;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
-import static co.com.reto.lulobank.utils.Constant.*;
+import static co.com.reto.lulobank.utils.Constant.MESSAGE;
+import static co.com.reto.lulobank.utils.Constant.MESSAGE_STATUS;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 
 public class AllEmployees implements Question<Boolean> {
 
+    private final ResponseAllEmployee responseAllEmployee;
+
+    public AllEmployees(ResponseAllEmployee responseAllEmployee) {
+        this.responseAllEmployee = responseAllEmployee;
+    }
+
     @Override
     public Boolean answeredBy(Actor actor) {
-        JsonPath jsonResponse = actor.recall(JSON_RESPONSE);
-        assertThat(jsonResponse.get(DATA), is(not(empty())));
-        assertThat(jsonResponse.get(MESSAGE).toString(),equalTo(MESSAGE_EXPECTED));
+        assertThat(responseAllEmployee.getData().size(), equalTo(24));
+        assertThat(responseAllEmployee.getData(), is(notNullValue()));
+        assertThat(responseAllEmployee.getMessage(), containsString(MESSAGE));
+        assertThat(responseAllEmployee.getStatus(), equalToIgnoringCase(MESSAGE_STATUS));
         return true;
     }
-    public static AllEmployees listedCorrectly() {
-        return new AllEmployees();
+
+    public static AllEmployees listedCorrectly(ResponseAllEmployee responseAllEmployee) {
+        return new AllEmployees(responseAllEmployee);
     }
 }

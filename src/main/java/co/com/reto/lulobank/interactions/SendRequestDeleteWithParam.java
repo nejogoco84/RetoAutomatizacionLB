@@ -9,14 +9,16 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Interaction;
 import net.serenitybdd.screenplay.Tasks;
 
-public class SendRequestGet implements Interaction {
-    HelpFunctions helpFunctions = new HelpFunctions();
-    public final String endpoint;
-    public final String service;
+import static co.com.reto.lulobank.utils.Constant.EMPLOYEE_ID;
 
-    public SendRequestGet(String endpoint, String service) {
-        this.endpoint = endpoint;
-        this.service = service;
+public class SendRequestDeleteWithParam extends SendRequestGet implements Interaction {
+    HelpFunctions helpFunctions = new HelpFunctions();
+
+    private final String param;
+
+    public SendRequestDeleteWithParam(String endpoint, String service, String param) {
+        super(endpoint, service);
+        this.param = param;
     }
 
     @SneakyThrows
@@ -26,16 +28,16 @@ public class SendRequestGet implements Interaction {
             SerenityRest.given()
                     .baseUri(endpoint)
                     .basePath(service)
-                    .when()
-                    .get();
+                    .pathParam(EMPLOYEE_ID, param)
+                    .when().delete();
             helpFunctions.saveInfoResponse(actor);
-
         } catch (Exception ex) {
             throw new MyBusinessException(String.format(ExceptionMessages.JSON_NOT_RESPONSE.getMessage(), service, ex));
         }
+
     }
 
-    public static SendRequestGet toService(String endpoint, String service) {
-        return Tasks.instrumented(SendRequestGet.class, endpoint, service);
+    public static SendRequestDeleteWithParam toService(String endpoint, String service, String param) {
+        return Tasks.instrumented(SendRequestDeleteWithParam.class, endpoint, service, param);
     }
 }
